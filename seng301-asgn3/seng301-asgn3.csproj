@@ -83,7 +83,6 @@
     <Compile Include="src\Frontend2\IDeliverable.cs" />
     <Compile Include="src\Frontend2\IVendingMachineFactory.cs" />
     <Compile Include="src\Frontend2\PopCan.cs" />
-    <Compile Include="src\VendingMachineFactory.cs" />
     <Compile Include="src\VendingMachineLogic.cs" />
     <Compile Include="src\VendingMachineStoredContents.cs" />
   </ItemGroup>
