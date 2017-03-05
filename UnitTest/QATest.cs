@@ -672,6 +672,71 @@ namespace UnitTest {
 
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U05 - This test tries to create a Vending Machine with invalid coins. It should FAIL.
+         */
+        public void u05_BadButtonNumber()
+        {
+
+            coinKinds = new List<int> { 0 };
+            int vmIndex = -1;
+
+            // Create a vending machine, it should fail here
+            vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 0, 0, 0);
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U06 - This test tries to press an invalid button. It should FAIL.
+         */
+        public void u06_BadButtonNumber()
+        {
+
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            int vmIndex = -1;
+
+            // Create a vending machine
+            vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 0, 0, 0);
+
+            // Press button that does not exist, should fail here
+            vmf.PressButton(vmIndex, 3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U07 - This test tries to press a button that does not exist. It should FAIL.
+         */
+        public void u07_BadButtonNumber2()
+        {
+
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            int vmIndex = -1;
+
+            // Create a vending machine
+            vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 0, 0, 0);
+
+            // Press button that does not exist, should fail here
+            vmf.PressButton(vmIndex, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U08 - This test tries to press a button that does not exist. It should FAIL.
+         */
+        public void u08_BadButtonNumber3()
+        {
+
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            int vmIndex = -1;
+
+            // Create a vending machine
+            vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 0, 0, 0);
+
+            // Press button that does not exist, should fail here
+            vmf.PressButton(vmIndex, 4);
+        }
 
 
 
