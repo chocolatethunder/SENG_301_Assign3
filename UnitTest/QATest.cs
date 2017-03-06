@@ -617,11 +617,62 @@ namespace UnitTest {
             Assert.IsTrue(checkTearDown(expectedCoinsinRack, expectedCoinsinStorage, expectedPops, unloaded));
 
         }
+        
+       [TestMethod]
+        /* T13 - This test checks how the machine stores coins when there exists an overload
+         * in the coin racks. 
+         */
+        public void t13_NeedToStorePayment()
+        {
 
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            popNames = new List<string> { "stuff" };
+            popCosts = new List<int> { 135 };
 
+            // Configure the machine
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 10, 10, 10);
+            vmf.ConfigureVendingMachine(vmIndex, popNames, popCosts);
 
+            // Load coins in the coin racks
+            List<List<Coin>> coinRacks = new List<List<Coin>>();
+            coinRacks.Add(new List<Coin> { new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5), new Coin(5) });                      // Rack 1
+            coinRacks.Add(new List<Coin> { new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10), new Coin(10) });                      // Rack 1
+            coinRacks.Add(new List<Coin> { new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25), new Coin(25) });                      // Rack 1
+            coinRacks.Add(new List<Coin> { new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100), new Coin(100) });                      // Rack 1
+            this.LoadCoinRacks(vmIndex, coinRacks);
 
+            // Load pops in the pop racks
+            List<List<PopCan>> popRacks = new List<List<PopCan>>();
+            popRacks.Add(new List<PopCan> { new PopCan("stuff") });  // Rack 0
+            this.LoadPopRacks(vmIndex, popRacks);
 
+            // Insert Coins
+            List<int> coinInput = new List<int> { 25, 100, 10 };
+            this.insertCoins(vmIndex, coinInput);
+
+            // Make a selection
+            vmf.PressButton(vmIndex, 0);
+
+            // --- Assert Check Delivery
+            // Reality
+            delivered = vmf.ExtractFromDeliveryChute(vmIndex);
+            // Expected
+            expectedChange = 0;
+            expectedPops = new List<PopCan> { new PopCan("stuff") };
+            // Assert
+            Assert.IsTrue(checkDelivery(expectedChange, expectedPops, delivered));
+
+            // --- Assert Check Teardown
+            // Reality
+            unloaded = vmf.UnloadVendingMachine(vmIndex);
+            // Expected
+            expectedCoinsinRack = 1400;
+            expectedCoinsinStorage = 135;
+            expectedPops = new List<PopCan>();
+            // Assert
+            Assert.IsTrue(checkTearDown(expectedCoinsinRack, expectedCoinsinStorage, expectedPops, unloaded));
+
+        }
 
 
 
