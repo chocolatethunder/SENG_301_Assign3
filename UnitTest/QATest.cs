@@ -620,7 +620,8 @@ namespace UnitTest {
 
 
         [TestMethod]
-        /* T11 -  
+        /* T11 - This function tests what happens when there is an extract without making a selection and the 
+         * machine is unloaded. It also checks to see what happens when a new machine is created and configured on the go.
          */
         public void t11_GoodExtract() {
 
@@ -653,9 +654,12 @@ namespace UnitTest {
             expectedPops = new List<PopCan>();
             //Assert
             Assert.IsTrue(checkDelivery(expectedChange, expectedPops, delivered));
+
+            // Insert coins
             List<int> coinInput = new List<int> { 100, 100, 100 };
             this.insertCoins(vmIndex, coinInput);
 
+            // Extract before delivery
             delivered = vmf.ExtractFromDeliveryChute(vmIndex);
             //Expected
             expectedChange = 0;
