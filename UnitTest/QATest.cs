@@ -976,13 +976,10 @@ namespace UnitTest {
          */
         public void u05_BadButtonNumber()
         {
-
             coinKinds = new List<int> { 0 };
-            int vmIndex = -1;
 
             // Create a vending machine, it should fail here
-            vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 0, 0, 0);
-
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 10, 10, 10);
         }
 
         [TestMethod]
