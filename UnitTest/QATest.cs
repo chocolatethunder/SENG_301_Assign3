@@ -1,4 +1,18 @@
-﻿using System;
+﻿/* 
+ * Written for SENG 301.
+ * 
+ * Installation notes: Place this inside the Unit Test solution that references
+ * the seng301-asign3 solution.
+ * 
+ * @author Saurabh Tomar
+ * @author Christian
+ * @author Michael
+ * 
+ */
+
+
+
+using System;
 using System.Collections.Generic;
 using Frontend2;
 using Frontend2.Hardware;
@@ -24,7 +38,7 @@ namespace UnitTest {
         List<string> popNames;
         List<int> popCosts;
 
-        // Good test scripts
+        // GOOD TEST SCRIPTS
 
         [TestMethod]
         /* T01 - This test inserts the exact amount of change into the vending 
@@ -646,6 +660,7 @@ namespace UnitTest {
             popRacks.Add(new List<PopCan> { new PopCan("stuff") }); // Rack 2
             this.LoadPopRacks(vmIndex, popRacks);
 
+            // Press the selection button
             vmf.PressButton(vmIndex, 0);
 
             delivered = vmf.ExtractFromDeliveryChute(vmIndex);
@@ -694,7 +709,7 @@ namespace UnitTest {
 
             delivered = vmf.ExtractFromDeliveryChute(vmIndex);
             // Expected
-            expectedChange = 50;        // Whoops - This was set to 60 instead of 50
+            expectedChange = 50;
             expectedPops = new List<PopCan> { new PopCan("Coke") };
             // Assert
             Assert.IsTrue(checkDelivery(expectedChange, expectedPops, delivered));
@@ -705,9 +720,7 @@ namespace UnitTest {
             expectedCoinsinStorage = 0;
             expectedPops = new List<PopCan> { new PopCan("water"), new PopCan("stuff") };
             Assert.IsTrue(checkTearDown(expectedCoinsinRack, expectedCoinsinStorage, expectedPops, unloaded));
-
             
-            // vmIndex++;           // Whoops - This is not needed. The CreateVendingMachine auto returns a vmIndex.
             coinKinds = new List<int> { 100, 5, 25, 10 };
             popNames = new List<string> { "Coke", "water", "stuff" };
             popCosts = new List<int> { 250, 250, 205 };
@@ -716,7 +729,6 @@ namespace UnitTest {
 
             popNames = new List<string> { "A", "B", "C" };
             popCosts = new List<int> { 5, 10, 25 };
-            // vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 10, 10, 10); // Whoops you do not need to create another VM
             vmf.ConfigureVendingMachine(vmIndex, popNames, popCosts);
 
             // --- Assert Check Teardown
@@ -731,7 +743,7 @@ namespace UnitTest {
 
             // Load new coin racks 
             coinRacks = new List<List<Coin>>();
-            coinRacks.Add(new List<Coin>());                                    // Rack 0  Whoops - Need to add to empty 100 coin rack
+            coinRacks.Add(new List<Coin>());                                    // Rack 0  
             coinRacks.Add(new List<Coin> { new Coin(5) });                      // Rack 1
             coinRacks.Add(new List<Coin> { new Coin(25), new Coin(25) });       // Rack 2
             coinRacks.Add(new List<Coin> { new Coin(10) });                     // Rack 3
@@ -762,7 +774,7 @@ namespace UnitTest {
             // Reality
             unloaded = vmf.UnloadVendingMachine(vmIndex);
             // Expected
-            expectedCoinsinRack = 90;               // Whoops - this was set to 65 instead of 90
+            expectedCoinsinRack = 90;
             expectedCoinsinStorage = 0;
             expectedPops = new List<PopCan> { new PopCan("A"), new PopCan("B") };
             // Assert
@@ -866,10 +878,9 @@ namespace UnitTest {
 
 
        [TestMethod]
-        /* T13 - This test checks how the machine stores coins when there exists an overload
-         * in the coin racks. 
+        /* T13 - This test checks how the machine stores coins when there exists an overload in the coin racks. 
          */
-        public void t13_NeedToStorePayment()
+        public void t13_StorePaymentInStorageBin()
         {
 
             coinKinds = new List<int> { 5, 10, 25, 100 };
@@ -1100,10 +1111,7 @@ namespace UnitTest {
             // Press button that does not exist, should fail here
             vmf.PressButton(vmIndex, 4);
         }
-
-
-
-
+        
 
 
         //--------------------------------------------------------------------------------------------------------------
