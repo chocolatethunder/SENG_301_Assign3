@@ -920,10 +920,8 @@ namespace UnitTest {
             Assert.IsTrue(checkTearDown(expectedCoinsinRack, expectedCoinsinStorage, expectedPops, unloaded));
 
         }
-
-
-
-        // Bad tests scripts
+        
+        // BAD TEST SCRIPTS
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
@@ -934,12 +932,11 @@ namespace UnitTest {
             coinKinds = new List<int> { 5, 10, 25, 100 };
             popNames = new List<string> { "Coke", "water", "stuff" };
             popCosts = new List<int> { 250, 250, 205 };
-            int vmIndex = -1;
 
             // Configure the machine            
-            vmf.ConfigureVendingMachine(vmIndex, popNames, popCosts);
+            vmf.ConfigureVendingMachine(0, popNames, popCosts);  // FAILS HERE
             // Create a vending machine
-            vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 10, 10, 10);
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 10, 10, 10);
 
             // rest of it should not even excecute 
 
@@ -948,7 +945,6 @@ namespace UnitTest {
             coinRacks.Add(new List<Coin> { new Coin(5) });                       // Rack 0
             coinRacks.Add(new List<Coin> { new Coin(10) });                      // Rack 1
             coinRacks.Add(new List<Coin> { new Coin(25), new Coin(25) });        // Rack 2
-            coinRacks.Add(new List<Coin> { new Coin(100) });                     // Rack 3
             this.LoadCoinRacks(vmIndex, coinRacks);
 
             // Load pops in the pop racks
@@ -970,12 +966,88 @@ namespace UnitTest {
 
         }
 
+
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        /* U05 - This test tries to create a Vending Machine with invalid coins. It should FAIL.
+        /* U02 - This test tries to configure a vending machine with cost of pop less than 1. The test should FAIL.
          */
-        public void u05_BadButtonNumber()
-        {
+         public void u02_ConfigurePopCostLessThanOne() {
+
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            popNames = new List<string> { "Coke", "water", "stuff" };
+            popCosts = new List<int> { 250, 250, 0 };
+
+            // Create a vending machine
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 10, 10, 10);
+
+            // Configure the machine            
+            vmf.ConfigureVendingMachine(vmIndex, popNames, popCosts);  // FAILS HERE
+
+            // Load coins in the coin racks
+            List<List<Coin>> coinRacks = new List<List<Coin>>();
+            coinRacks.Add(new List<Coin> { new Coin(5) });                       // Rack 0
+            coinRacks.Add(new List<Coin> { new Coin(10) });                      // Rack 1
+            coinRacks.Add(new List<Coin> { new Coin(25), new Coin(25) });        // Rack 2
+            this.LoadCoinRacks(vmIndex, coinRacks);
+
+            // Load pops in the pop racks
+            List<List<PopCan>> popRacks = new List<List<PopCan>>();
+            popRacks.Add(new List<PopCan> { new PopCan("Coke") });  // Rack 0
+            popRacks.Add(new List<PopCan> { new PopCan("water") }); // Rack 1
+            popRacks.Add(new List<PopCan> { new PopCan("stuff") }); // Rack 2
+            this.LoadPopRacks(vmIndex, popRacks);
+
+            // --- Assert Check Teardown
+            // Reality
+            unloaded = vmf.UnloadVendingMachine(vmIndex);
+            // Expected
+            expectedCoinsinRack = 0;
+            expectedCoinsinStorage = 0;
+            expectedPops = new List<PopCan>();
+            // Assert
+            Assert.IsTrue(checkTearDown(expectedCoinsinRack, expectedCoinsinStorage, expectedPops, unloaded));
+
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U03 - This test tries to configure a vending machine with 2 pop types instead of the specified 
+         * 3 in the initial setup. The test should FAIL.
+         */
+        public void u03_PopNamesLessThanConfigured() {
+
+            coinKinds = new List<int> { 5, 10, 25, 100 };
+            popNames = new List<string> { "Coke", "water" };
+            popCosts = new List<int> { 250, 250 };
+
+            // Create a vending machine
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 10, 10, 10);
+
+            // Configure the machine            
+            vmf.ConfigureVendingMachine(vmIndex, popNames, popCosts);
+            
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U04 - This test tries to configure a vending machine with 2 non unique coin denominations. 
+         * The test should FAIL.
+         */
+        public void u04_NonUniqueCoinTypes() {
+            coinKinds = new List<int> { 1, 1 };
+
+            // Create a vending machine, it should fail here
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 1, 10, 10, 10);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        /* U05 - This test tries to create a Vending Machine with a coin type of less than 1. It should FAIL.
+         */
+        public void u05_InvalidCoinTypeOfZero() {
             coinKinds = new List<int> { 0 };
 
             // Create a vending machine, it should fail here
@@ -984,9 +1056,10 @@ namespace UnitTest {
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        /* U06 - This test tries to press an invalid button. It should FAIL.
+        /* U06 - This test tries to press a button which should not be an index on the vending machine's
+         * selection buttons array. It should FAIL.
          */
-        public void u06_BadButtonNumber()
+        public void u06_BadButtonNumberSelectionArrayIndex()
         {
             coinKinds = new List<int> { 5, 10, 25, 100 };
 
@@ -999,9 +1072,9 @@ namespace UnitTest {
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        /* U07 - This test tries to press a button that does not exist. It should FAIL.
+        /* U07 - This test tries to press a button that is a negative integer. It should FAIL.
          */
-        public void u07_BadButtonNumber2()
+        public void u07_BadButtonNumberLessThanZero()
         {
             coinKinds = new List<int> { 5, 10, 25, 100 };
 
@@ -1014,9 +1087,10 @@ namespace UnitTest {
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        /* U08 - This test tries to press a button that does not exist. It should FAIL.
+        /* U08 - This test tries to press a button that is greater than the number of buttons
+         * available to the machine. It should FAIL.
          */
-        public void u08_BadButtonNumber3()
+        public void u08_BadButtonNumberMoreThan()
         {
             coinKinds = new List<int> { 5, 10, 25, 100 };
 
