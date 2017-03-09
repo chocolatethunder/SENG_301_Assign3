@@ -1020,17 +1020,15 @@ namespace UnitTest {
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
         /* U08 - This test tries to press a button that does not exist. It should FAIL.
          */
         public void u08_BadButtonNumber3()
         {
-
             coinKinds = new List<int> { 5, 10, 25, 100 };
-            int vmIndex = -1;
 
             // Create a vending machine
-            vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 0, 0, 0);
+            int vmIndex = vmf.CreateVendingMachine(coinKinds, 3, 1, 1, 1);
 
             // Press button that does not exist, should fail here
             vmf.PressButton(vmIndex, 4);
