@@ -5,8 +5,8 @@
  * the seng301-asign3 solution.
  * 
  * @author Saurabh Tomar
- * @author Christian
- * @author Michael
+ * @author Christian Roatis
+ * @author Michael Verwaayen
  * 
  */
 
